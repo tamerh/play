@@ -12,14 +12,14 @@ pip install bbpy
 
 
 ```python
-import bbpy as b
+import bbpy
 import os
 
 # first create or used existing folder for the tool files
 os.mkdir('outFolder')
 
 # create the package class instance with new or existing folder which data built before.
-bb=b.bbpy('outFolder')
+bb=bbpy.bbpy('outFolder')
 
 # build data locally. Sample data contains only few records.
 bb.buildData(datasets='sample_data')
@@ -35,7 +35,7 @@ bb.search('tpi1,vav_human,ENST00000297261')
 bb.search("tpi1,ENSG00000164690","ensembl")
 
 
-#Mappings queries are in following format which allow chains mapping among datasets
+#Mappings queries allow chains mapping among datasets and in following format
 #map(dataset_id).filter(Boolean expression).map(...).filter(...) 
 
 # map proteins to go terms
@@ -50,7 +50,7 @@ bb.stop()
 ```
 
 ## Build data
-Building data process selected datasets and retrieve indivudual records belonging to these datasets with their attributes and mapping data to the other datasets. Before building data first let's list the datasets and genomes, 
+Building data process selected datasets and retrieve indivudual records belonging to these datasets with their attributes and mapping data.x
 
 
 ```python
@@ -95,7 +95,7 @@ bb.buildData(datasets="+ensembl_bacteria",genomePattern="serovar_infantis,serova
 
 ```python
 # build data with default dataset and start server
-bb=b.bbpy('outFolder')
+bb=bbpy.bbpy('outFolder')
 bb.buildData()
 bb.stop()
 bb.start()
@@ -153,7 +153,7 @@ res=bb.mapping("homo sapiens",'map(ensembl).filter(ensembl.name.contains("TTY"))
 ```
 
 ### Protein centric use cases
-Uniprot is used for protein related dataset such as protein identifiers, accession, sequence, features, variants, and mapping information to other datasets. Let's list some protein related datasets attributes and then execute example queries similary with gene centric examples,
+Uniprot is used for protein related dataset such as protein identifiers, accession, sequence, features, variants, and mapping information to other datasets. 
 
 
 ```python
@@ -167,16 +167,103 @@ bb.listAttrs('interpro')
 
 ```python
 # Map gene names to reviewed uniprot identifiers
-bb.mapping("msh6,stk11,bmpr1a,smad4,brca2","map(uniprot)",source ="hgnc")
 
-# Filter proteins by sequence mass and retrieve protein sequences
-bb.mapping("clock_human,shh_human,p53_human","filter(uniprot.sequence.mass > 45000)" ,attrs = "sequence$mass,sequence$seq")
+#search & filter by name
+bb.mapping('rag1_human,clock_human,bmal1_human,shh_human,aicda_human,at5g3_human,p53_human','filter(uniprot.names.exists(a,a=="Sonic hedgehog protein"))')
 
-# Helix type feature locations of a protein
-bb.mapping("shh_human",'map(ufeature).filter(ufeature.type=="helix")' ,attrs = "location$begin,location$end")
+#search & filter by sequence mass
+bb.mapping('rag1_human,clock_human,bmal1_human,shh_human,aicda_human,at5g3_human,p53_human','filter(uniprot.sequence.mass > 45000)')
 
-# Get all variation identifiers from a gene with given condition
-bb.mapping("tp53",'map(uniprot).map(ufeature).filter(ufeature.original=="I" && ufeature.variation=="S").map(variantid)',source = "hgnc")
+#search & filter by sequence size
+bb.mapping('rag1_human,clock_human,bmal1_human,shh_human,aicda_human,at5g3_human,p53_human','filter(size(uniprot.sequence.seq) > 400)')
+
+#go term molecular
+bb.mapping('shh_human,p53_human','map(go).filter(go.type=="molecular_function")')
+
+#go term cellular
+bb.mapping('shh_human,p53_human','map(go).filter(go.type=="cellular_component")')
+
+#go term boolean
+bb.mapping('shh_human,p53_human','map(go).filter(go.name.contains("binding") || go.name.contains("activity"))')
+
+#filter first then go terms contains word
+bb.mapping('shh_human,p53_human,rag1_human,clock_human,bmal1_human,aicda_human,at5g3_human','filter(size(uniprot.sequence.seq) > 400).map(go).filter(go.name.contains("binding") || go.name.contains("activity"))')
+
+#interpro Conserved site
+bb.mapping('shh_human,p53_human,rag1_human,clock_human,bmal1_human,aicda_human,at5g3_human','map(interpro).filter(interpro.type=="Conserved_site")')
+
+#ENA type mRNA
+bb.mapping('shh_human,p53_human','map(ena).filter(ena.type=="mrna")')
+
+#ENA type genomic DNA
+bb.mapping('shh_human,p53_human','map(ena).filter(ena.type=="genomic_dna")')
+
+#to refseqs
+bb.mapping('rag1_human,clock_human,bmal1_human,shh_human,aicda_human,at5g3_human,p53_human','map(refseq)')
+
+#cancer related gene variants
+bb.mapping('pms2,mlh1,msh2,msh6,stk11,bmpr1a,smad4,brca1,brca2,tp53,pten,palb2,tsc1,tsc2,flcn,met,cdkn2a,rb1','map(uniprot).filter(uniprot.reviewed).map(ufeature).map(variantid)')
+
+#feature helix type
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.type=="helix")')
+
+#feature sequence variant
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.type=="sequence variant")')
+
+#genes to mutation feature or contains
+bb.mapping('her2,ras,p53','map(uniprot).map(ufeature).filter(ufeature.type=="mutagenesis site" || ufeature.description.contains("cancer"))')
+
+#feature location
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.location.begin>0 && ufeature.location.end<300)')
+
+#feature description contains
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.description.contains("tumor"))')
+
+#feature specific variant
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.original=="I" && ufeature.variation=="S")')
+
+#feature maps variantid
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.original=="I" && ufeature.variation=="S").map(variantid)')
+
+#feature has evidences
+bb.mapping('shh_human,p53_human','map(ufeature).filter(size(ufeature.evidences)>1)')
+
+#feature has experimental evidence
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.evidences.exists(a,a.type=="ECO:0000269"))')
+
+#feature has pubmed evidence
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.evidences.exists(a,a.source=="pubmed"))')
+
+#feature pdb evidence
+bb.mapping('shh_human,p53_human','map(ufeature).filter(ufeature.evidences.exists(a,a.source=="pdb"))')
+
+#pdb method NMR
+bb.mapping('shh_human,p53_human','map(pdb).filter(pdb.method=="nmr")')
+
+#pdb chains
+bb.mapping('shh_human,p53_human','map(pdb).filter(pdb.chains=="A/C=95-292")')
+
+#pdb resolution
+bb.mapping('shh_human,p53_human','map(pdb).filter(pdb.resolution=="2.60 A")')
+
+#pdb method or chains
+bb.mapping('shh_human,p53_human','map(pdb).filter(pdb.method=="nmr" || pdb.chains=="C/D=1-177")')
+
+#reactome activation pathways
+bb.mapping('shh_human,p53_human','map(reactome).filter(reactome.pathway.contains("activation"))')
+
+#reactome signaling pathways
+bb.mapping('shh_human,p53_human','map(reactome).filter(reactome.pathway.contains("signaling"))')
+
+#reactome regulation pathways
+bb.mapping('shh_human,p53_human','map(reactome).filter(reactome.pathway.contains("Regulation"))')
+
+#orphanet disease name
+bb.mapping('shh_human,p53_human','map(orphanet).filter(orphanet.disease.contains("cancer"))')
+
+#durgs by drugbank
+bb.mapping('shh_human,p53_human','map(drugbank)')
+
 ```
 
 ### Chemisty centric use cases
@@ -185,7 +272,7 @@ ChEMBL is used as a source for chemical related datasets.
 
 ```python
 # Chembl is not in the default dataset so first built the data
-bb=b.bbpy('bbChem')
+bb=bbpy.bbpy('bbChem')
 bb.buildData(datasets="chembl,uniprot,hgnc,taxonomy,go,efo,eco")
 bb.start()
 ```
