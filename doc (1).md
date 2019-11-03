@@ -1,5 +1,5 @@
 ## biobtreePy
-The [biobtreePy](https://github.com/tamerh/biobtreePy) package provides a Python interface to [biobtree](https://github.com/tamerh/biobtree) tool which provides search and chain mappings functionalities for identifiers, accessions and special keywords for genomic research pipelines.
+The [biobtreePy](https://github.com/tamerh/biobtreePy) package provides a Python interface to [biobtree](https://github.com/tamerh/biobtree) tool which provides search and chain mappings functionalities for identifiers, accessions and special keywords for genomic research.
 
 ## Installation
 
@@ -101,7 +101,7 @@ bb.stop()
 bb.start()
 ```
 
-### Gene centric use cases
+## Gene centric use cases
 Ensembl, Ensembl Genomes and HGNC datasets are used for gene related data. One of the most common gene related dataset identfiers are `ensembl`,`hgnc`,`transcript`,`exon`. Note that there are several other gene related datasets without attributes and can be used in mapping queries such as probesets, genebank and entrez etc.
 
 
@@ -152,8 +152,7 @@ res=bb.mapping("CASP3,CASP4",'map(transcript).map(affy_hg_u133_plus_2)')
 res=bb.mapping("homo sapiens",'map(ensembl).filter(ensembl.name.contains("TTY"))',attrs = "name")
 ```
 
-### Protein centric use cases
-Uniprot is used for protein related dataset such as protein identifiers, accession, sequence, features, variants, and mapping information to other datasets. 
+## Protein centric use cases
 
 
 ```python
@@ -266,7 +265,49 @@ bb.mapping('shh_human,p53_human','map(drugbank)')
 
 ```
 
-### Chemisty centric use cases
+## Ontology & Taxonomy use cases
+
+
+```python
+#taxonomy children
+bb.mapping('9606','map(taxchild)')
+
+# taxonomy grand children
+bb.mapping('862507','map(taxchild).map(taxchild)')
+
+#taxonomy grand^2 parent
+bb.mapping('10090','map(taxparent).map(taxparent).map(taxparent)')
+
+#taxonomy Asian children
+bb.mapping('10090','map(taxchild).filter(taxonomy.common_name.contains("Asian"))')
+
+#taxonomy European children
+bb.mapping('10090','map(taxchild).filter(taxonomy.common_name.contains("European"))')
+
+#go term parent
+bb.mapping('go:0004707','map(goparent)')
+
+#go term parent type
+bb.mapping('go:0004707','map(goparent).filter(go.type=="biological_process")')
+
+#efo disaease name
+bb.search('inflammatory bowel disease')
+
+#efo children
+bb.mapping('efo:0003767','map(efochild)')
+
+#efo parent
+bb.mapping('efo:0000384','map(efoparent)')
+
+#eco children
+bb.mapping('eco:0000269','map(ecochild)')
+
+#eco parent
+bb.mapping('eco:0007742','map(ecoparent)')
+
+```
+
+## Chemisty centric use cases
 ChEMBL is used as a source for chemical related datasets.
 
 
@@ -294,36 +335,79 @@ bb.listAttrs('chembl_cell_line')
 # search document, molecules by names,smile and inchi key
 bb.search('GSK2606414,Cn1cc(c2ccc3N(CCc3c2)C(=O)Cc4cccc(c4)C(F)(F)F)c5c(N)ncnc15,SIXVRXARNAVBTC-UHFFFAOYSA-N,CHEMBL3421631')
 
-# molecule activities
-bb.mapping('GSK2606414','map(chembl_activity)')
-           
-# molecule activities filter
-bb.mapping('GSK2606414','map(chembl_activity).filter(chembl.activity.value > 10.0)')
-           
-# molecule targets
-bb.mapping('GSK2606414','map(chembl_activity).map(chembl_document).map(chembl_assay).map(chembl_target)')
-           
-# target single protein to uniprot
-bb.mapping('CHEMBL2789','map(chembl_target_component).map(uniprot)'')
+#target single protein to uniprot
+bb.mapping('chembl2789','filter(chembl.target.type=="single_protein").map(chembl_target_component).map(uniprot)')
 
-# cancer related genes to targets
-bb.mapping('PMS2,MLH1,MSH2,MSH6,STK11,BMPR1A,SMAD4,BRCA1,BRCA2,TP53,PTEN,PALB2,TSC1,TSC2,FLCN,MET,CDKN2A,RB1' \
-           'map(uniprot).map(chembl_target_component).map(chembl_target)',source ="hgnc")
+#cancer related genes to targets
+bb.mapping('pms2,mlh1,msh2,msh6,stk11,bmpr1a,smad4,brca1,brca2,tp53,pten,palb2,tsc1,tsc2,flcn,met,cdkn2a,rb1','map(uniprot).map(chembl_target_component).map(chembl_target)')
 
-# cancer related genes to targets with type
-bb.mapping('PMS2,MLH1,MSH2,MSH6,STK11,BMPR1A,SMAD4,BRCA1,BRCA2,TP53,PTEN,PALB2,TSC1,TSC2,FLCN,MET,CDKN2A,RB1' \
-           'map(uniprot).map(chembl_target_component).map(chembl_target).filter(chembl.target.type=="protein-protein_interaction")',source ="hgnc")
-           
-# document activities
-bb.mapping('CHEMBL1121978','map(chembl_activity)')
+#cancer related genes to target with type
+bb.mapping('pms2,mlh1,msh2,msh6,stk11,bmpr1a,smad4,brca1,brca2,tp53,pten,palb2,tsc1,tsc2,flcn,met,cdkn2a,rb1','map(uniprot).map(chembl_target_component).map(chembl_target).filter(chembl.target.type=="protein-protein_interaction")',source='hgnc')
 
-# document assay
-bb.mapping('CHEMBL3421631','map(chembl_assay)')
+#molecule activities filter bao
+bb.mapping('gsk2606414','map(chembl_activity).filter(chembl.activity.bao=="BAO_0000190")')
 
-# document assay filter
-bb.mapping('CHEMBL3421631','map(chembl_assay).filter(chembl.assay.type=="Functional" || chembl.assay.type=="Binding")')
-           
-# document cell line
-bb.mapping('CHEMBL3421631','map(chembl_assay).map(chembl_cell_line)')
+#molecule activities AND
+bb.mapping('gsk2606414','map(chembl_activity).filter(chembl.activity.value > 10.0 && chembl.activity.bao=="BAO_0000190")')
+
+#molecule activities OR
+bb.mapping('gsk2606414','map(chembl_activity).filter(chembl.activity.value>10.0 || chembl.activity.pChembl>5.0)')
+
+#molecule targets
+bb.mapping('gsk2606414','map(chembl_activity).map(chembl_document).map(chembl_assay).map(chembl_target)')
+
+#document activities
+bb.mapping('chembl1121978','map(chembl_activity)')
+
+#document assay
+bb.mapping('chembl3421631','map(chembl_assay)')
+
+#document assay filter
+bb.mapping('chembl3421631','map(chembl_assay).filter(chembl.assay.type=="Functional" || chembl.assay.type=="Binding")')
+
+#document cell line
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_cell_line)')
+
+#document cell line Filter
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_cell_line).filter(chembl.cellLine.tax=="9615" || chembl.cellLine.efo=="EFO_0002841")')
+
+#document target
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_target)')
+
+#document target protein type
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_target).filter(chembl.target.type=="single_protein")')
+
+#document target tissue
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_target).filter(chembl.target.type=="tissue")')
+
+#document target organism
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_target).filter(chembl.target.type=="organism")')
+
+#document target protein uniprot
+bb.mapping('chembl3421631','map(chembl_assay).map(chembl_target).map(chembl_target_component).map(uniprot)')
+
+#document molecule
+bb.mapping('chembl3421631','map(chembl_molecule)')
+
+#document molecule filter
+bb.mapping('chembl3421631','map(chembl_molecule).filter(chembl.molecule.heavyAtoms < 30.0 && chembl.molecule.aromaticRings <2.0)')
+
+#assay target
+bb.mapping('chembl615156','map(chembl_target)')
+
+#assay cell line
+bb.mapping('chembl3424821','map(chembl_cell_line)')
+
+#assay target protein
+bb.mapping('chembl615156','map(chembl_target).filter(chembl.target.type=="single_protein")')
+
+#assay target protein uniprot
+bb.mapping('chembl615156','map(chembl_target).map(chembl_target_component).map(uniprot)')
+
+#search activity
+bb.search('chembl_act_93229')
+
+#activity molecule with filter
+bb.mapping('chembl_act_93229','filter(chembl.activity.bao=="BAO_0000179").map(chembl_molecule)')
 
 ```
