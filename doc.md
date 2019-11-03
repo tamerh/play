@@ -61,38 +61,241 @@ Building data process selected datasets and retrieve indivudual records belongin
 
 ```python
 # view source and target datasets
-bb.datasetsView
+res=bb.datasetsView
+
+
+#display as table
+import tabulate
+from IPython.display import HTML, display
+
+#display first 50
+display(HTML(tabulate.tabulate(res[:50], tablefmt='html')))
 ```
+
+
+<table>
+<tbody>
+<tr><td>id                     </td><td>numeric id</td><td>type           </td></tr>
+<tr><td>uniprot                </td><td>1         </td><td>source & target</td></tr>
+<tr><td>ensembl                </td><td>2         </td><td>source & target</td></tr>
+<tr><td>taxonomy               </td><td>3         </td><td>source & target</td></tr>
+<tr><td>go                     </td><td>4         </td><td>source & target</td></tr>
+<tr><td>hgnc                   </td><td>5         </td><td>source & target</td></tr>
+<tr><td>uniparc                </td><td>6         </td><td>source & target</td></tr>
+<tr><td>uniref50               </td><td>7         </td><td>source & target</td></tr>
+<tr><td>uniref90               </td><td>8         </td><td>source & target</td></tr>
+<tr><td>uniref100              </td><td>9         </td><td>source & target</td></tr>
+<tr><td>chebi                  </td><td>10        </td><td>source & target</td></tr>
+<tr><td>interpro               </td><td>11        </td><td>source & target</td></tr>
+<tr><td>literature_mappings    </td><td>12        </td><td>source & target</td></tr>
+<tr><td>hmdb                   </td><td>13        </td><td>source & target</td></tr>
+<tr><td>my_data                </td><td>14        </td><td>source & target</td></tr>
+<tr><td>chembl_document        </td><td>15        </td><td>source & target</td></tr>
+<tr><td>chembl_assay           </td><td>16        </td><td>source & target</td></tr>
+<tr><td>chembl_activity        </td><td>17        </td><td>source & target</td></tr>
+<tr><td>chembl_molecule        </td><td>18        </td><td>source & target</td></tr>
+<tr><td>chembl_target_component</td><td>19        </td><td>source & target</td></tr>
+<tr><td>chembl_target          </td><td>20        </td><td>source & target</td></tr>
+<tr><td>chembl_cell_line       </td><td>21        </td><td>source & target</td></tr>
+<tr><td>efo                    </td><td>22        </td><td>source & target</td></tr>
+<tr><td>eco                    </td><td>23        </td><td>source & target</td></tr>
+<tr><td>cath                   </td><td>30        </td><td>target         </td></tr>
+<tr><td>cathgene3d             </td><td>31        </td><td>target         </td></tr>
+<tr><td>ccds                   </td><td>32        </td><td>target         </td></tr>
+<tr><td>cdd                    </td><td>33        </td><td>target         </td></tr>
+<tr><td>doi                    </td><td>35        </td><td>target         </td></tr>
+<tr><td>drugbank               </td><td>36        </td><td>target         </td></tr>
+<tr><td>ec                     </td><td>37        </td><td>target         </td></tr>
+<tr><td>ena                    </td><td>38        </td><td>target         </td></tr>
+<tr><td>exon                   </td><td>39        </td><td>target         </td></tr>
+<tr><td>ortholog               </td><td>40        </td><td>target         </td></tr>
+<tr><td>paralog                </td><td>41        </td><td>target         </td></tr>
+<tr><td>transcript             </td><td>42        </td><td>target         </td></tr>
+<tr><td>expressionatlas        </td><td>43        </td><td>target         </td></tr>
+<tr><td>flybase                </td><td>44        </td><td>target         </td></tr>
+<tr><td>entrez                 </td><td>45        </td><td>target         </td></tr>
+<tr><td>hamap                  </td><td>46        </td><td>target         </td></tr>
+<tr><td>intact                 </td><td>47        </td><td>target         </td></tr>
+<tr><td>kegg                   </td><td>48        </td><td>target         </td></tr>
+<tr><td>kegg map               </td><td>49        </td><td>target         </td></tr>
+<tr><td>ko                     </td><td>50        </td><td>target         </td></tr>
+<tr><td>mim                    </td><td>51        </td><td>target         </td></tr>
+<tr><td>metacyc                </td><td>52        </td><td>target         </td></tr>
+<tr><td>genbank                </td><td>53        </td><td>target         </td></tr>
+<tr><td>opentargets            </td><td>54        </td><td>target         </td></tr>
+<tr><td>orphanet               </td><td>55        </td><td>target         </td></tr>
+<tr><td>panther                </td><td>56        </td><td>target         </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl")
+res=bb.listGenomes("ensembl")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                         </th></tr>
+</thead>
+<tbody>
+<tr><td>acanthochromis_polyacanthus     </td></tr>
+<tr><td>ailuropoda_melanoleuca          </td></tr>
+<tr><td>amphilophus_citrinellus         </td></tr>
+<tr><td>amphiprion_ocellaris            </td></tr>
+<tr><td>amphiprion_percula              </td></tr>
+<tr><td>anabas_testudineus              </td></tr>
+<tr><td>anas_platyrhynchos_platyrhynchos</td></tr>
+<tr><td>anolis_carolinensis             </td></tr>
+<tr><td>anser_brachyrhynchus            </td></tr>
+<tr><td>aotus_nancymaae                 </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl_bacteria")
+res=bb.listGenomes("ensembl_bacteria")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                                            </th></tr>
+</thead>
+<tbody>
+<tr><td>_bacillus_aminovorans                              </td></tr>
+<tr><td>_bacillus_aminovorans_gca_001643235                </td></tr>
+<tr><td>_bacillus_selenitireducens_mls10                   </td></tr>
+<tr><td>_bacillus_thuringiensis_serovar_konkukian_str_97_27</td></tr>
+<tr><td>_bacteroides_pectinophilus_atcc_43243              </td></tr>
+<tr><td>_brevibacterium_flavum                             </td></tr>
+<tr><td>_brevibacterium_halotolerans                       </td></tr>
+<tr><td>_butyribacterium_methylotrophicum                  </td></tr>
+<tr><td>_chrysanthemum_coronarium_phytoplasma              </td></tr>
+<tr><td>_clostridium_acidurici_9a                          </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl_fungi")
+res=bb.listGenomes("ensembl_fungi")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                                              </th></tr>
+</thead>
+<tbody>
+<tr><td>_candida_arabinofermentans_nrrl_yb_2248_gca_001661425</td></tr>
+<tr><td>_candida_auris_gca_001189475                         </td></tr>
+<tr><td>_candida_auris_gca_002759435                         </td></tr>
+<tr><td>_candida_auris_gca_002775015                         </td></tr>
+<tr><td>_candida_auris_gca_003013715                         </td></tr>
+<tr><td>_candida_auris_gca_003014415                         </td></tr>
+<tr><td>_candida_duobushaemulonis_gca_002926085              </td></tr>
+<tr><td>_candida_glabrata_gca_000002545                      </td></tr>
+<tr><td>_candida_glabrata_gca_001466525                      </td></tr>
+<tr><td>_candida_glabrata_gca_001466535                      </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl_metazoa")
+res=bb.listGenomes("ensembl_metazoa")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                 </th></tr>
+</thead>
+<tbody>
+<tr><td>acyrthosiphon_pisum     </td></tr>
+<tr><td>adineta_vaga            </td></tr>
+<tr><td>aedes_aegypti           </td></tr>
+<tr><td>amphimedon_queenslandica</td></tr>
+<tr><td>anopheles_darlingi      </td></tr>
+<tr><td>anopheles_gambiae       </td></tr>
+<tr><td>anoplophora_glabripennis</td></tr>
+<tr><td>apis_mellifera          </td></tr>
+<tr><td>atta_cephalotes         </td></tr>
+<tr><td>belgica_antarctica      </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl_plants")
+res=bb.listGenomes("ensembl_plants")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                </th></tr>
+</thead>
+<tbody>
+<tr><td>actinidia_chinensis    </td></tr>
+<tr><td>aegilops_tauschii      </td></tr>
+<tr><td>amborella_trichopoda   </td></tr>
+<tr><td>arabidopsis_halleri    </td></tr>
+<tr><td>arabidopsis_lyrata     </td></tr>
+<tr><td>arabidopsis_thaliana   </td></tr>
+<tr><td>beta_vulgaris          </td></tr>
+<tr><td>brachypodium_distachyon</td></tr>
+<tr><td>brassica_napus         </td></tr>
+<tr><td>brassica_oleracea      </td></tr>
+</tbody>
+</table>
+
 
 
 ```python
-bb.listGenomes("ensembl_protists")
+res=bb.listGenomes("ensembl_protists")
+
+#displays first 10
+display(HTML(tabulate.tabulate(res[:10], tablefmt='html',headers=["genomes"])))
 ```
+
+
+<table>
+<thead>
+<tr><th>genomes                                        </th></tr>
+</thead>
+<tbody>
+<tr><td>acanthamoeba_castellanii_str_neff_gca_000313135</td></tr>
+<tr><td>achlya_hypogyna_gca_002081595                  </td></tr>
+<tr><td>albugo_laibachii                               </td></tr>
+<tr><td>angomonas_deanei_gca_000442575                 </td></tr>
+<tr><td>aphanomyces_astaci_gca_000520075               </td></tr>
+<tr><td>aphanomyces_astaci_gca_002197585               </td></tr>
+<tr><td>aphanomyces_astaci_gca_003546545               </td></tr>
+<tr><td>aphanomyces_astaci_gca_003546565               </td></tr>
+<tr><td>aphanomyces_astaci_gca_003546585               </td></tr>
+<tr><td>aphanomyces_astaci_gca_003546605               </td></tr>
+</tbody>
+</table>
+
 
 ### Build data examples 
 
@@ -132,6 +335,16 @@ bb=b.bbpy('bb')
 bb.stop()
 bb.start()
 ```
+
+    biobtreePy is starting
+
+
+
+
+
+    'biobtreePy started'
+
+
 
 ## Example use cases
 
